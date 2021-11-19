@@ -10,31 +10,39 @@ print(gps_module)
 _gps = micropyGPS.MicropyGPS()
 
 
-def verifyStringID(string):
-    nmeaSentence = str(string)
+def verifyStringID(nmeastring):
+    nmeaSentence = str(nmeastring)
     nmeaID = nmeaSentence[3:8]
     if nmeaID == "GPRMC":
         return True
     return False
 
+def readLine(gpsModule):
+    satSysName = gpsModule.readline()
+    return satSysName
 
+def serialize_GPRMC(nmeaSent):
+    if verifyStringID(nmeaSent):
+        for car in str(nmeaSent):
+            _gps.update(car)
+            return _gps.latitude, _gps.longitude, _gps.timestamp, _gps.date
 
-def run():
-    while True:
-        utime.sleep(.1)
-        satSysName = gps_module.readline()
-        if verifyStringID(satSysName):
-            for car in str(satSysName):
-                _gps.update(car)
-            print(_gps.latitude, _gps.longitude, _gps.timestamp, _gps.date)
-
-def infinite():
+def defaultOperation():
     index = 0
     while True:
         yield index
         index += 1
-    
-test = infinite()
 
-while True:
-    print(next(test))
+def buildRuntime():
+    return
+
+    
+def handleReset():
+    print("restart placeholder")
+
+def __init__():
+    try:
+        buildRuntime()
+        defaultOperation()
+    except:
+        handleReset()
