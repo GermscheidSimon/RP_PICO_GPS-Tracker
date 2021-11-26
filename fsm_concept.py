@@ -1,4 +1,3 @@
-
 from ConcreteStates import *;
 
 #==================================================================
@@ -7,13 +6,20 @@ from ConcreteStates import *;
     # Will attempt to independently determine if the GPS coords have changed,
     # and relay that information to the more powerful (and power hungry) RP w/LTE.
 
+# TODO:
+    # create Location class to better model coordinates and origin info
+    # verify retry capability with current exception system
+
 class PIGPS(object):
     def __init__(self):
         
-        self.curState = (
+        self.curTask = (
             'INIT', 0
         )
-        self.tasks = [self.curState]
+        self.tasks = [self.curTask]
+        self.prevTask = ()
+        self.prevState = []
+        self.origin = 0
 
         # After PIGPS determines which is the next action to take, it will call the next transition.
         self.transitions = {
@@ -34,9 +40,9 @@ class PIGPS(object):
 
         }
 
-    def stateDictionary(self, currentState):
-        print('current state', currentState)
-        nextTransition = (self.stateConditions[currentState])
+    def stateDictionary(self, task):
+        print('current state', task)
+        nextTransition = (self.stateConditions[task])
         print('next transition found: ', nextTransition)
         nextState = self.transitions[nextTransition]
         return nextState
@@ -44,21 +50,25 @@ class PIGPS(object):
     def runPIGPS(self):
         while len(self.tasks) > 0:
             print('runGPS loop. Task:', self.tasks)
-            nextTask = self.stateDictionary(self.tasks[0])
+            nextTask = self.stateDictionary(self.tasks[0]) # fetch next state object
+            self.prevTask = self.curTask # backup last task incase of exception
+            self.curTask = nextTask      # set curTask as next the next task before attempt to run
 
             try:
-                State = nextTask()
+                State = nextTask(self.prevState, self.origin)
                 State.run()
 
-                if len(self.tasks) <= 1: # if in error/retry loop don't add more tasks
-                    self.tasks.append((State.stateName, State.errState))
+                if len(self.tasks) <= 1: # if no other tasks exist add next task
+                    self.tasks.append((State.stateName, State.errState)) # use errcode to generate next state
+                self.prevState = State     # record most recent state 
+                self.origin = State.origin # if state operation deterimines change in location, update controller
                 self.tasks.pop(0)
                 
             except:
-                print('in exception loop', self.curState)
+                print('in exception loop', self.curTask)
                 isNotRetry = len(self.tasks) == 1
                 if isNotRetry:
-                    nextState = (nextTask, 2)
+                    self.curTask = (self.curTask[0], 2)
     
     
 

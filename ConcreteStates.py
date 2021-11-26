@@ -1,14 +1,18 @@
 #======================================================
 # Concrete States                                     #
 #======================================================
+  # Concrete States represent static procedures for the machine to perform
+  # any given set of tasks
 
+    # ================================ #
     # Base class for all concrete states
 class State(object):
     # each state will use the constructor to run the concrete operation
     # next will then pass the result of run to the state machine to call next operation
-    def __init__(self):
-        nextState = self.run()
-        self.next(nextState)
+    def __init__(self, prevState, origin):
+        self.errState = 0
+        self.stateName = 'BASECLASS'
+        self.data = []
 
     def run(self):
         print("execute concrete state operation")
@@ -19,10 +23,12 @@ class State(object):
 
     # Connect to GPS Module, gather 10 gps coordinates, export to piGPS to transition
 class ReadingGPS(State):
-    def __init__(self):
+    def __init__(self, prevState, origin):
         self.errState = 0
         self.stateName = 'READGPS'
-        self.data = []
+        self.data = [0, 0, 0, 0, 0]
+        self.prevState = prevState
+        self.origin = origin
 
     def run(self):
         print('it runned')
@@ -33,9 +39,12 @@ class ReadingGPS(State):
 
     # Power full RP on, pass GPS information to RP, and await response
 class ConnectingPi(State):
-    def __init__(self):
+    def __init__(self, prevState, origin):
         self.errState = 0
         self.stateName = 'CONNECTPI'
+        self.prevState = prevState
+        self.origin = origin
+
 
     def run(self):
        try:
@@ -47,23 +56,25 @@ class ConnectingPi(State):
 
 class EvalCoord(State):
     # TODO: implement proper lat, long, time, date int
-    def __init__(self):
+    def __init__(self, prevState, origin):
         self.errState = 0
-        self.stateName = 'EVALCOORDS'
+        self.stateName = 'EVALCOORD'
+        self.listOfCoords = prevState.data
+        self.origin = origin
 
     def evaluateMovement(self, listOfCoords, origin):
         for coord in listOfCoords:
-            if coord > origin + 10 or coord < origin -10:
+            if coord < origin + 10 and coord > origin -10:
                 print('eval res- no movement detected')
                 return False
             else:
                 print('eval res- movement detected')
                 return True
 
-    def run(self, listOfCoords, origin):
+    def run(self):
 
         try: 
-            movementDetected = self.evaluateMovement(listOfCoords, origin)
+            movementDetected = self.evaluateMovement(self.listOfCoords, self.origin)
             if movementDetected:
                 self.errState = 1
         except:

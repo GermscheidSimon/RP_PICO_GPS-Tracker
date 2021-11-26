@@ -4,17 +4,10 @@ from fsm_concept import PIGPS;
 class ConcreteState_MockObjs():
     
     def READGPS_SuccessPath(self):
-        testGPSREAD = ReadingGPS()
-        testGPSREAD.data = [
-            ((10),(10),('time'),('date'))
-        ]
-        return testGPSREAD
+        print(self)
 
     def READGPS_EXCEPTIONTHROWN(self):
-        testGPSREAD = ReadingGPS()
-        testGPSREAD.errState = 2
-        testGPSREAD.data = []
-        return testGPSREAD
+        print('test')
         
 
 class ConcreteStates_IntegrationTests(object):
