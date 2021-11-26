@@ -1,5 +1,4 @@
 from ConcreteStates import *;
-
 #==================================================================
 # Pico GPS Finite State Machine - Coordination engine for Pico board
 #==================================================================

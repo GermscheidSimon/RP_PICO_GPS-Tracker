@@ -1,5 +1,4 @@
 from machine import Pin, UART;
-import utime;
 import micropyGPS
 
 class piGPS(object):
