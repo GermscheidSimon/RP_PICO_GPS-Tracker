@@ -1,4 +1,5 @@
 from ConcreteStates import *;
+import utime;
 #==================================================================
 # Pico GPS Finite State Machine - Coordination engine for Pico board
 #==================================================================
@@ -48,6 +49,7 @@ class PIGPS(object):
     
     def runPIGPS(self):
         while len(self.tasks) > 0:
+            utime.sleep(5) # sleep between operations to decreese battery usage
             print('runGPS loop. Task:', self.tasks)
             nextTask = self.stateDictionary(self.tasks[0]) # fetch next state object
             self.prevTask = self.curTask # backup last task incase of exception

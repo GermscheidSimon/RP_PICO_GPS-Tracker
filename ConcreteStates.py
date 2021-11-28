@@ -1,3 +1,6 @@
+import gps_module;
+
+
 #======================================================
 # Concrete States                                     #
 #======================================================
@@ -26,12 +29,18 @@ class ReadingGPS(State):
     def __init__(self, prevState, origin):
         self.errState = 0
         self.stateName = 'READGPS'
-        self.data = [0, 0, 0, 0, 0]
+        self.data = []
         self.prevState = prevState
         self.origin = origin
 
     def run(self):
-        print('it runned')
+        try:
+            _gpsModule = gps_module.piGPS()
+            _gpsModule.run()
+            self.data = _gpsModule.data
+        except:
+            self.errState = 2
+            raise Exception
         
 
     def next(self, curState):
