@@ -67,31 +67,32 @@ class EvalCoord(State):
         self.stateName = 'EVALCOORD'
         self.listOfCoords = prevState.data
         self.origin = origin
-        self.LongitudinalDistanceFromOrigin = 0
-        self.LatitudinalDistanceFromOrigin = 0
+        self.distanceFromOriginInmi = 0
+        self.movementDetectedThreshold = 0.0568182 # ~250 ft in mi
 
     def evaluateMovement(self, listOfCoords, origin):
         AvgLatCoord = 0
         AvgLongCoord = 0
+        # build average coord from data provided
         for coord in listOfCoords:
             AvgLatCoord += GPSCoord().convertDMMToDD(coord.lat)
             AvgLongCoord += GPSCoord().convertDMMToDD(coord.long)
         AvgLongCoord = AvgLongCoord / len(listOfCoords)
         AvgLatCoord = AvgLatCoord / len(listOfCoords)
-        self.LatitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLatCoord, GPSCoord().convertDMMToDD(origin.lat))
-        self.LongitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLongCoord, GPSCoord().convertDMMToDD(origin.long))
-        print('lat, long distance from origin: ',self.LatitudinalDistanceFromOrigin, self.LongitudinalDistanceFromOrigin)
 
-
-
+        # convert origin to Decimal Degrees
+        originlatDD = GPSCoord().convertDMMToDD(origin.lat)
+        originlongDD = GPSCoord().convertDMMToDD(origin.long)
+        self.distanceFromOriginInmi = GPSCoord().haversine(AvgLatCoord, AvgLongCoord, originlatDD, originlongDD)  
+        print(self.distanceFromOriginInmi)
+        if self.distanceFromOriginInmi >= self.movementDetectedThreshold:
+            self.errState = 1
     
-
     def run(self):
 
         try: 
-            movementDetected = self.evaluateMovement(self.listOfCoords, self.origin)
-            if movementDetected:
-                self.errState = 1
+            self.evaluateMovement(self.listOfCoords, self.origin)
+            
         except:
             self.errState = 2
             raise Exception
