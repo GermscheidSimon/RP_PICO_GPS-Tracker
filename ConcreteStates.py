@@ -67,6 +67,8 @@ class EvalCoord(State):
         self.stateName = 'EVALCOORD'
         self.listOfCoords = prevState.data
         self.origin = origin
+        self.LongitudinalDistanceFromOrigin = 0
+        self.LatitudinalDistanceFromOrigin = 0
 
     def evaluateMovement(self, listOfCoords, origin):
         AvgLatCoord = 0
@@ -76,9 +78,9 @@ class EvalCoord(State):
             AvgLongCoord += GPSCoord().convertDMMToDD(coord.long)
         AvgLongCoord = AvgLongCoord / len(listOfCoords)
         AvgLatCoord = AvgLatCoord / len(listOfCoords)
-        LatitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLatCoord, GPSCoord().convertDMMToDD(origin.lat))
-        LongitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLongCoord, GPSCoord().convertDMMToDD(origin.long))
-        print(LatitudinalDistanceFromOrigin, LatitudinalDistanceFromOrigin)
+        self.LatitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLatCoord, GPSCoord().convertDMMToDD(origin.lat))
+        self.LongitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLongCoord, GPSCoord().convertDMMToDD(origin.long))
+        print('lat, long distance from origin: ',self.LatitudinalDistanceFromOrigin, self.LongitudinalDistanceFromOrigin)
 
 
 

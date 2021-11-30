@@ -1,4 +1,4 @@
-from typing import Tuple
+from math import radians, cos, sin, asin, sqrt
 
 
 class GPSCoord(object):
@@ -9,30 +9,21 @@ class GPSCoord(object):
         self.date = []
         self.time = []
 
-    def compareDMMCoord(self, firstCoord, SecondCoord):
-        firstCoord_DD = self.convertDMMToDD(firstCoord)
-        SecondCoord_DD = self.convertDMMToDD(SecondCoord)
-        distance = int(0)
-        if firstCoord_DD >= SecondCoord_DD:
-            distance = firstCoord_DD - SecondCoord_DD
-        else:
-            distance = SecondCoord_DD - firstCoord_DD
-        if distance < 0:
-            distance * -1
-        return distance
+    # haversine implementation to calculate rough distance between two points on a sphere (closer to the poles the less accurate this can be)
+    # (the earth is not a perfect sphere)
+    def haversine(self, lat1, lon1, lat2, lon2):
 
-    def compareDDCoord(self, firstCoord, SecondCoord):
-        distance = 0
-        if firstCoord >= SecondCoord:
-            distance = firstCoord - SecondCoord
-        else:
-            distance = SecondCoord - firstCoord
-        if distance < 0:
-            distance * -1
-        return distance
+        R = 3959.87433 # this is in miles.  For Earth radius in kilometers use 6372.8 km
 
+        dLat = radians(lat2 - lat1)
+        dLon = radians(lon2 - lon1)
+        lat1 = radians(lat1)
+        lat2 = radians(lat2)
 
-
+        a = sin(dLat/2)**2 + cos(lat1)*cos(lat2)*sin(dLon/2)**2
+        c = 2*asin(sqrt(a))
+        return R * c
+   
     def convertDMMToDD(self, coord):
         # one degree = 60 minutes
         # one minutes = 60 seconds
