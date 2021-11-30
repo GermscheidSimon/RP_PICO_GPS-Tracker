@@ -29,13 +29,11 @@ class piGPS(object):
     def attemptLock(self):
         retryCount = 20
         self.gps_module = UART(1, baudrate=9600, tx=Pin(4), rx=Pin(5))
-        print(self.gps_module)
         while retryCount > 0:
             utime.sleep(.1)
             nmeaSent = self.gps_module.readline()
             utime.sleep(.1)
 
-            print('al', nmeaSent)
             if self.verifyStringID(nmeaSent):
                 newCoord = self.serializeNMEAtoCoord(nmeaSent)
                 lat = newCoord.lat
@@ -60,6 +58,7 @@ class piGPS(object):
         self.data = []
         self.moduleGPSlock = self.attemptLock() # note- time consuming I/O blocking processs!!
         if not self.moduleGPSlock: # if no lock established in 100seconds break out of read process
+            print('no lock found')
             raise Exception 
 
     def serializeNMEAtoCoord(self, nmeaSent):
@@ -70,6 +69,7 @@ class piGPS(object):
         coord.long = self.gpsReader.longitude
         coord.time = [self.gpsReader.timestamp]
         coord.date = [self.gpsReader.date]
+        print(coord.lat, coord.long)
         return coord
 
     def run(self):
@@ -81,16 +81,14 @@ class piGPS(object):
                 utime.sleep(.1) #questionable 'await'
                 nextSent = self.gps_module.readline()
                 utime.sleep(.1) #questionable 'await'
-                print(nextSent)
-
                 if self.verifyStringID(nextSent):
                     nextCoord = self.serializeNMEAtoCoord(nextSent)
-                    if self.CheckIfValidCoord(nextCoord):
+                    if self.CheckIfValidCoord(nextCoord.lat) and self.CheckIfValidCoord(nextCoord.long):
                         self.data.append(nextCoord)
                         nmeaSentCount += 1
-                        print(nextCoord)
                     else:
                         badReadCount += 1
+                        print('badreads',badReadCount)
 
                 if badReadCount > 20:
                     establishednewLock = self.attemptLock()

@@ -60,11 +60,11 @@ class PIGPS(object):
             try:
                 State = nextTask(self.prevState, self.origin)
                 State.run()
+                self.origin = State.origin # if state operation deterimines change in location, update controller
 
                 if len(self.tasks) <= 1: # if no other tasks exist add next task
                     self.tasks.append((State.stateName, State.errState)) # use errcode to generate next state
                 self.prevState = State     # record most recent state 
-                self.origin = State.origin # if state operation deterimines change in location, update controller
                 self.tasks.pop(0)
                 
             except:

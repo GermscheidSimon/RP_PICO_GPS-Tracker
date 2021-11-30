@@ -60,8 +60,6 @@ class ConnectingPi(State):
            return curState
 
 class EvalCoord(State):
-    # TODO: implement proper lat, long, time, date int
-    # [self.gpsReader.latitude, self.gpsReader.longitude, self.gpsReader.timestamp, self.gpsReader.date]
     def __init__(self, prevState, origin):
         self.errState = 0
         self.stateName = 'EVALCOORD'
@@ -73,26 +71,48 @@ class EvalCoord(State):
     def evaluateMovement(self, listOfCoords, origin):
         AvgLatCoord = 0
         AvgLongCoord = 0
+        AvgLatDegrees = 0
+        AvgLatMins = 0
+        AvgLongDegrees = 0
+        AvgLongMins = 0
         # build average coord from data provided
         for coord in listOfCoords:
-            AvgLatCoord += GPSCoord().convertDMMToDD(coord.lat)
-            AvgLongCoord += GPSCoord().convertDMMToDD(coord.long)
-        AvgLongCoord = AvgLongCoord / len(listOfCoords)
-        AvgLatCoord = AvgLatCoord / len(listOfCoords)
+            AvgLatDegrees += coord.lat[0]
+            AvgLatMins += coord.lat[1]
+            AvgLongDegrees += coord.long[0]
+            AvgLongMins += coord.long[1]
+        
+        AvgLatDegrees = AvgLatDegrees / len(listOfCoords)
+        AvgLatMins = AvgLatMins / len(listOfCoords)
+        AvgLongDegrees = AvgLongDegrees / len(listOfCoords)
+        AvgLongMins = AvgLongMins / len(listOfCoords)
+
+        # convert to DD for haversin simplicity
+        AvgLongCoord = [AvgLatDegrees, AvgLatMins, listOfCoords[0].lat[2]]
+        AvgLatCoord = [AvgLongDegrees, AvgLongMins, listOfCoords[0].long[2]]
 
         # convert origin to Decimal Degrees
         originlatDD = GPSCoord().convertDMMToDD(origin.lat)
         originlongDD = GPSCoord().convertDMMToDD(origin.long)
-        self.distanceFromOriginInmi = GPSCoord().haversine(AvgLatCoord, AvgLongCoord, originlatDD, originlongDD)  
-        print(self.distanceFromOriginInmi)
+        self.distanceFromOriginInmi = GPSCoord().haversine(GPSCoord().convertDMMToDD(AvgLatCoord), GPSCoord().convertDMMToDD(AvgLongCoord), originlatDD, originlongDD)  
+        print('distance from origin:', self.distanceFromOriginInmi)
         if self.distanceFromOriginInmi >= self.movementDetectedThreshold:
+            newOriginCoord = GPSCoord()
+            newOriginCoord.lat = AvgLatCoord
+            newOriginCoord.long = AvgLongCoord
+            newOriginCoord.date = listOfCoords[0].date
+            newOriginCoord.time = listOfCoords[0].time
             self.errState = 1
+            self.origin = newOriginCoord
     
     def run(self):
 
-        try: 
+        try:
             self.evaluateMovement(self.listOfCoords, self.origin)
-            
+            print('update origin: ', self.origin.lat, self.origin.long)
+
         except:
             self.errState = 2
             raise Exception
+
+
