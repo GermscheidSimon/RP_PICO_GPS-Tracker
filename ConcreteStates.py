@@ -65,6 +65,7 @@ class ConnectingPi(State):
 
 class EvalCoord(State):
     # TODO: implement proper lat, long, time, date int
+    # [self.gpsReader.latitude, self.gpsReader.longitude, self.gpsReader.timestamp, self.gpsReader.date]
     def __init__(self, prevState, origin):
         self.errState = 0
         self.stateName = 'EVALCOORD'
@@ -73,12 +74,11 @@ class EvalCoord(State):
 
     def evaluateMovement(self, listOfCoords, origin):
         for coord in listOfCoords:
-            if coord < origin + 10 and coord > origin -10:
-                print('eval res- no movement detected')
-                return False
-            else:
-                print('eval res- movement detected')
-                return True
+            return
+    
+    def compareCoord(self, firstCoord, secondCoord):
+        return 
+    
 
     def run(self):
 
@@ -89,4 +89,3 @@ class EvalCoord(State):
         except:
             self.errState = 2
             raise Exception
-
