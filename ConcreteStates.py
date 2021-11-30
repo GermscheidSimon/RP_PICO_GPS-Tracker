@@ -1,5 +1,5 @@
 import gps_module;
-
+from GPSCoord import GPSCoord;
 
 #======================================================
 # Concrete States                                     #
@@ -41,10 +41,6 @@ class ReadingGPS(State):
         except:
             self.errState = 2
             raise Exception
-        
-
-    def next(self, curState):
-        return self
 
     # Power full RP on, pass GPS information to RP, and await response
 class ConnectingPi(State):
@@ -73,11 +69,19 @@ class EvalCoord(State):
         self.origin = origin
 
     def evaluateMovement(self, listOfCoords, origin):
+        AvgLatCoord = 0
+        AvgLongCoord = 0
         for coord in listOfCoords:
-            return
-    
-    def compareCoord(self, firstCoord, secondCoord):
-        return 
+            AvgLatCoord += GPSCoord().convertDMMToDD(coord.lat)
+            AvgLongCoord += GPSCoord().convertDMMToDD(coord.long)
+        AvgLongCoord = AvgLongCoord / len(listOfCoords)
+        AvgLatCoord = AvgLatCoord / len(listOfCoords)
+        LatitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLatCoord, GPSCoord().convertDMMToDD(origin.lat))
+        LongitudinalDistanceFromOrigin = GPSCoord().compareDDCoord(AvgLongCoord, GPSCoord().convertDMMToDD(origin.long))
+        print(LatitudinalDistanceFromOrigin, LatitudinalDistanceFromOrigin)
+
+
+
     
 
     def run(self):

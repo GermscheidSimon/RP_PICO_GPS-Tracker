@@ -1,5 +1,6 @@
 from ConcreteStates import *;
 import utime;
+from GPSCoord import GPSCoord
 #==================================================================
 # Pico GPS Finite State Machine - Coordination engine for Pico board
 #==================================================================
@@ -18,8 +19,9 @@ class PIGPS(object):
         )
         self.tasks = [self.curTask]
         self.prevTask = ()
-        self.prevState = []
-        self.origin = 0
+        self.origin = GPSCoord()
+        self.prevState = State(self.curTask, self.origin)
+        
 
         # After PIGPS determines which is the next action to take, it will call the next transition.
         self.transitions = {
@@ -70,6 +72,3 @@ class PIGPS(object):
                 isNotRetry = len(self.tasks) == 1
                 if isNotRetry:
                     self.curTask = (self.curTask[0], 2)
-    
-    
-
