@@ -116,3 +116,12 @@ class EvalCoord(State):
             raise Exception
 
 
+class exept(State):
+    # I assume something bad happened if you're reading this
+    def __init__(self, prevState, origin):
+        self.prevState = prevState
+        self.origin = origin
+        return self
+
+    def run(self):
+        return self
