@@ -4,6 +4,7 @@ try :
 except:
     from serial import Serial
     import time
+import json
 
 class Handshake(object):
     def __init__(self):
@@ -32,7 +33,7 @@ class Handshake(object):
             print(resMsg)
             if not resMsg == None:
                 self.RX_nextSent(resMsg)
-                if self.curRXHDR == 'RESACK\n':
+                if self.curRXHDR == 'RESACK':
                     self.handShakeEstablished = True
                     return True
             print(retries) 
@@ -75,9 +76,16 @@ class Handshake(object):
 
     def RX_nextSent(self, nextMsg):
         self.curSent = nextMsg.decode()
-        if not nextMsg == None and len(self.curRXHDR) == 6:
-            self.curRXHDR = self.curSent[0:6]
-            self.curRXBDY = self.curSent[7:-1]
+        self.curRXHDR = self.curSent[0:6]
+        self.curRXBDY = self.curSent[7:-1]
+
+    def TX_JSON(self, json):
+        self.writeNextLine(json)
+        self.sleep(.1)
+        self.writeNextLine('\n')
+        isReceived = self.readNextLine()
+        if isReceived == 'RXTRUE':
             return True
-        else:
+        else: 
             return False
+
