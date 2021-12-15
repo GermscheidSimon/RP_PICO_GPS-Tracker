@@ -23,19 +23,25 @@ class Handshake(object):
     def requestLock(self):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
+            self.sleep(2)
             self.writeNextLine('REQACK')
+            self.sleep(1)
             resMsg = self.readNextLine()
-            self.RX_nextSent(resMsg)
-            if self.curRXHDR == 'RESACK':
-                self.handShakeEstablished = True
-                return True
+            if not resMsg == None:
+                self.RX_nextSent(resMsg)
+                if self.curRXHDR == 'RESACK':
+                    self.handShakeEstablished = True
+                    return True
+            print(retries) 
             retries += 1
         return False
     
     def respondLock(self):
         retries = 0
         while self.handShakeEstablished and retries <= 100:
+            self.sleep(2)
             reqMsg = self.readNextLine()
+            self.sleep(1)
             self.RX_nextSent(reqMsg)
             if self.curRXHDR == 'REQACK':
                 self.writeNextLine('RESACK')
@@ -48,6 +54,7 @@ class Handshake(object):
         self.serialInt = UART(1, baudrate=9600, tx=Pin(8), rx=Pin(9), bits=int(8), parity=None)
         self.readNextLine = self.serialInt.readline
         self.writeNextLine = self.MycroPy_SerialWrite
+        self.sleep = utime.sleep
         
     def MycroPy_SerialWrite(self, msg):
         encodedMsg = str(msg).encode('utf-8')
@@ -57,6 +64,7 @@ class Handshake(object):
         self.serialInt = Serial('/dev/ttyserial0', 9600)
         self.readNextLine = self.serialInt.read_until
         self.writeNextLine = self.C_PySerialWrite
+        self.sleep = time.sleep
 
     def C_PySerialWrite(self, msg):
         encodedMsg = str(msg).encode('utf-8')
