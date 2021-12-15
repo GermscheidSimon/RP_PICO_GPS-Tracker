@@ -24,12 +24,13 @@ class Handshake(object):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
             self.sleep(2)
-            self.writeNextLine('REQACK')
+            self.writeNextLine('REQACK\n')
             self.sleep(1)
             resMsg = self.readNextLine()
+            print(resMsg)
             if not resMsg == None:
                 self.RX_nextSent(resMsg)
-                if self.curRXHDR == 'RESACK':
+                if self.curRXHDR == 'RESACK\n':
                     self.handShakeEstablished = True
                     return True
             print(retries) 
@@ -38,13 +39,13 @@ class Handshake(object):
     
     def respondLock(self):
         retries = 0
-        while self.handShakeEstablished and retries <= 100:
+        while not self.handShakeEstablished and retries <= 100:
             self.sleep(2)
             reqMsg = self.readNextLine()
             self.sleep(1)
             self.RX_nextSent(reqMsg)
-            if self.curRXHDR == 'REQACK':
-                self.writeNextLine('RESACK')
+            if self.curRXHDR == 'REQACK\n':
+                self.writeNextLine('RESACK\n')
                 self.handShakeEstablished = True
                 return True
             retries += 1
@@ -71,12 +72,10 @@ class Handshake(object):
         self.serialInt.write(encodedMsg)
 
     def RX_nextSent(self, nextMsg):
-        self.curSent = nextMsg
-        startofLine = nextMsg[0] == 'b'
-        if startofLine:
-            trimmedMsg = nextMsg[2, nextMsg[-1]] # msg [b,',m,s,g,s,t,r,i,n,g,']
-            self.curRXHDR = trimmedMsg[0, 5]
-            self.curRXBDY = trimmedMsg[6, trimmedMsg[-1]]
+        self.curSent = nextMsg.decode()
+        if not nextMsg == None and len(self.curRXHDR) == 6:
+            self.curRXHDR = self.curSent[0:6]
+            self.curRXBDY = self.curSent[7:-1]
             return True
         else:
             return False
