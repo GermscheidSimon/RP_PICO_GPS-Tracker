@@ -61,7 +61,7 @@ class Handshake(object):
         self.serialInt.write(encodedMsg)
     
     def buildCPySerial(self):
-        self.serialInt = Serial('/dev/ttyserial0', 9600)
+        self.serialInt = Serial('/dev/serial0', 9600)
         self.readNextLine = self.serialInt.read_until
         self.writeNextLine = self.C_PySerialWrite
         self.sleep = time.sleep
