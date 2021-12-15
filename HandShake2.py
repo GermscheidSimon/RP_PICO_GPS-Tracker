@@ -7,6 +7,8 @@ except:
 
 class Handshake(object):
     def __init__(self):
+        self.curRXBDY = ""
+        self.curRXHDR = ""
         self.useMicroPy = True
         self.handShakeEstablished = False
         
