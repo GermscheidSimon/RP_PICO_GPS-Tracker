@@ -1,5 +1,6 @@
 import gps_module;
 from GPSCoord import GPSCoord;
+import CONNECTPI
 
 #======================================================
 # Concrete States                                     #
@@ -54,6 +55,9 @@ class ConnectingPi(State):
     def run(self):
        try:
            print('connecting To Pi')
+           connect = CONNECTPI.ConnectPi()
+           isSent = connect.transferCoord(self.origin)
+           print(isSent)
        except:
            self.errState = 2
            curState = (self.stateName, self.errState)
