@@ -1,7 +1,4 @@
 # pylance aNgRy if this isn't here
-from typing import Any, Union
-
-
 try :
     from machine import Pin, UART
     import utime
