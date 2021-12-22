@@ -44,6 +44,7 @@ class Handshake(object):
     def respondLock(self):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
+            print(retries)
             self.sleep(2)
             reqMsg = self.readNextLine()
             self.sleep(1)

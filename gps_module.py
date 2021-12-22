@@ -94,5 +94,7 @@ class piGPS(object):
                     establishednewLock = self.attemptLock()
                     if not establishednewLock:
                         raise Exception
+                    else: 
+                        badReadCount = 0
         except:
             raise Exception
