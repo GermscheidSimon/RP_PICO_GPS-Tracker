@@ -72,3 +72,7 @@ class PIGPS(object):
                 isNotRetry = len(self.tasks) == 1
                 if isNotRetry:
                     self.curTask = (self.curTask[0], 2)
+
+if __name__ == '__main__':
+    pigps = PIGPS()
+    pigps.runPIGPS()
