@@ -36,6 +36,7 @@ class Handshake(object):
                 self.RX_nextSent(resMsg)
                 if self.curRXHDR == 'RESACK':
                     self.handShakeEstablished = True
+                    print('lockestablished')
                     return True
             print(retries) 
             retries += 1
@@ -85,21 +86,24 @@ class Handshake(object):
 
     def RX_nextSent(self, nextMsg):
         self.curSent = nextMsg.decode()
+        print(self.curSent)
         self.curRXHDR = self.curSent[0:6]
         self.curRXBDY = self.curSent[7:-1]
 
 
-    def TX_data(self, data):
+    def TX_data (self, data):
         messages = ['DATSTR', f'DATHDR{data}', 'DATEND']
         self.flush()
         for msg in messages:
             bitSent = self.writeNextLine(msg)
+            print('bits', bitSent)
             self.writeNextLine('\n')
             self.sleep(1)
             msgres = self.readNextLine()
+            self.sleep(1)
             print(msgres)
             self.RX_nextSent(msgres)
-            if self.curRXHDR != 'RXTRUE':
+            if not self.curRXHDR == 'RXTRUE':
                 return False
             if  bitSent <= 0:
                 return False
@@ -117,6 +121,8 @@ class Handshake(object):
             if self.curRXHDR == msg:
                 self.sleep(1)
                 rxtrue = self.writeNextLine('RXTRUE')
+                self.writeNextLine('\n')
+                self.sleep(1)
                 if rxtrue <= 0:
                     return False
             if self.curRXHDR == 'DATHDR':

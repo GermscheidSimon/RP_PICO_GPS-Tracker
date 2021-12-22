@@ -61,6 +61,7 @@ class ConnectingPi(State):
         jsonObj = json.dumps({"lat": f'{coord.lat}', "long": f'{coord.long}', "date": f'{coord.date}', "time": f'{coord.time}'})
         self.raceCodnitionLoL()
         handshakeLock = handshake.requestLock()
+        print('hs', handshakeLock)
         if handshakeLock:
             isSent = handshake.TX_data(jsonObj)
             if isSent:
