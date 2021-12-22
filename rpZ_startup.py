@@ -5,7 +5,7 @@ def main():
         _rpPico_COM = rpConnectZero.rpConnectZero()
         _rpPico_COM.RX_data()
         data = _rpPico_COM.handshake.data
-        print('great success!')
+        print('great ')
         print(data)
     except:
         print('R2D2 Scream')

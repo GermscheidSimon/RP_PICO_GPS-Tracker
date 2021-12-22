@@ -68,7 +68,7 @@ class PIGPS(object):
                 self.tasks.pop(0)
                 
             except:
-                print('in exception loop', self.curTask)
+                print('in exception loop from', self.curTask)
                 isNotRetry = len(self.tasks) == 1
                 if isNotRetry:
                     self.curTask = (self.curTask[0], 2)

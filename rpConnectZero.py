@@ -1,8 +1,8 @@
-import Handshake
+import handshake
 
 class rpConnectZero(object):
     def __init__(self):
-        self.handshake = Handshake.Handshake() # expose handshake so data can be recovered
+        self.handshake = handshake.Handshake() # expose handshake so data can be recovered
 
     def RX_data(self):
        
@@ -17,3 +17,6 @@ class rpConnectZero(object):
 
     def printData(self):
         print(self.handshake.data)
+
+if __name__ == "__main__":
+    rpCOM = rpConnectZero().RX_data()

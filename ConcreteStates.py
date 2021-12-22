@@ -1,6 +1,9 @@
 import gps_module;
 from GPSCoord import GPSCoord;
-import CONNECTPI
+from handshake import Handshake
+import utime
+import json
+
 
 #======================================================
 # Concrete States                                     #
@@ -50,14 +53,34 @@ class ConnectingPi(State):
         self.stateName = 'CONNECTPI'
         self.prevState = prevState
         self.origin = origin
+        self.transferSuccess = False
 
+    def transferCoord(self, coord):
+        handshake = Handshake()
+        #encode obj to json
+        jsonObj = json.dumps({"lat": f'{coord.lat}', "long": f'{coord.long}', "date": f'{coord.date}', "time": f'{coord.time}'})
+        self.raceCodnitionLoL()
+        handshakeLock = handshake.requestLock()
+        if handshakeLock:
+            isSent = handshake.TX_data(jsonObj)
+            if isSent:
+                self.transferSuccess = True
+                return self.transferSuccess
+            else:
+                self.transferSuccess = False
+                return self.transferSuccess
+
+    def raceCodnitionLoL(self):
+        utime.sleep(2)
+        print('RP TURNED ON')
+        utime.sleep(5)
 
     def run(self):
        try:
-           print('connecting To Pi')
-           connect = CONNECTPI.ConnectPi()
-           isSent = connect.transferCoord(self.origin)
-           print(isSent)
+            print('connecting To Pi')
+            self.transferCoord(self.origin)
+            if self.transferSuccess:
+                print('yay')
        except:
            self.errState = 2
            curState = (self.stateName, self.errState)
@@ -120,12 +143,17 @@ class EvalCoord(State):
             raise Exception
 
 
-class exept(State):
-    # I assume something bad happened if you're reading this
-    def __init__(self, prevState, origin):
+class ExceptionThrown(State):
+    def __init__(self, prevState, origin, curTaskList):
         self.prevState = prevState
         self.origin = origin
-        return self
+        self.curTaskList = curTaskList
+    
+    def mapTaskListsWithPrevState(self):
+        return
 
     def run(self):
-        return self
+        try:
+            print('retry prev proc')
+        except:
+            print('ope, Game Over...')
