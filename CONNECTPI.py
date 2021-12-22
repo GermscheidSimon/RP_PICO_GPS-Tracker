@@ -1,4 +1,4 @@
-import Handshake
+import handshake
 import json
 import utime
 
@@ -8,7 +8,7 @@ class ConnectPi(object):
         self.transferSuccess = False
 
     def transferCoord(self, coord):
-        handshake = Handshake.Handshake()
+        handshake = handshake.Handshake()
         #encode obj to json
         jsonObj = json.dumps({"lat": f'{coord.lat}', "long": f'{coord.long}', "date": f'{coord.date}', "time": f'{coord.time}'})
         self.raceCodnitionLoL()
