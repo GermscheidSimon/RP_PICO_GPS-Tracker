@@ -49,7 +49,7 @@ class Handshake(object):
             reqMsg = self.readNextLine()
             self.sleep(1)
             self.RX_nextSent(reqMsg)
-            if self.curRXHDR == 'REQACK\n':
+            if self.curRXHDR == 'REQACK':
                 self.writeNextLine('RESACK\n')
                 self.handShakeEstablished = True
                 return True
