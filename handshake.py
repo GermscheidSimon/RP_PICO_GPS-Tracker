@@ -100,8 +100,7 @@ class Handshake(object):
             self.writeNextLine('\n')
             self.sleep(1)
             msgres = self.readNextLine()
-            self.sleep(1)
-            print(msgres)
+            print('amireal', msgres)
             self.RX_nextSent(msgres)
             if not self.curRXHDR == 'RXTRUE':
                 return False
@@ -116,12 +115,11 @@ class Handshake(object):
         self.flush()
         for msg in messages:
             msgres = self.readNextLine()
-            print(msgres)
+            print('y tho', msgres)
             self.RX_nextSent(msgres)
             if self.curRXHDR == msg:
                 self.sleep(1)
-                rxtrue = self.writeNextLine('RXTRUE')
-                self.writeNextLine('\n')
+                rxtrue = self.writeNextLine('RXTRUE\n')
                 self.sleep(1)
                 if rxtrue <= 0:
                     return False
