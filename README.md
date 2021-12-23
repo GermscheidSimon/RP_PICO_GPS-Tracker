@@ -1,7 +1,8 @@
-﻿# piGPS - Microcontroller Application
-
+# piGPS - Embedded Microcontroller Application
 
 This app is the embedded portion of a RP based GPS tracking system. The system will use the power efficient Pico rp2040 to detect movement using a GPS breakout board from U-blox. If movement is detected it will power on it's bigger sibling the RPZero and relay the coordinates.
+
+The idea for this app came about after getting hooked on the ComputerCraft mod in Minecraft which lets you similarly program embedded systems to automated tasks. 
 
 ## Architecture 
 This app is a [Finite State Machine (FSM)](https://en.wikipedia.org/wiki/Finite-state_machine). There are 3 primary states that the controller will attempt to move between continuously while looking for geographical movement. 
