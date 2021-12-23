@@ -58,7 +58,7 @@ class ConnectingPi(State):
     def transferCoord(self, coord):
         handshake = Handshake()
         #encode obj to json
-        jsonObj = json.dumps({"lat": f'{coord.lat}', "long": f'{coord.long}', "date": f'{coord.date}', "time": f'{coord.time}'})
+        jsonObj = json.dumps({"lat": coord.lat, "long": coord.long, "date": coord.date, "time": coord.time})
         self.raceCodnitionLoL()
         handshakeLock = handshake.requestLock()
         print('hs', handshakeLock)

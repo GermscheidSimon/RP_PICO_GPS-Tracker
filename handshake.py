@@ -1,4 +1,5 @@
 # pylance aNgRy if this isn't here
+
 try :
     from machine import Pin, UART
     import utime
@@ -59,7 +60,7 @@ class Handshake(object):
         return False
 
     def buildMycroPySerial(self):
-        self.serialInt = UART(0, baudrate=9600, tx=Pin(12), rx=Pin(13), bits=int(8), parity=None)
+        self.serialInt = UART(0, baudrate=9600, tx=Pin(12), rx=Pin(13), bits=int(8), parity=None, timeout=3000)
         self.readNextLine = self.serialInt.readline
         self.writeNextLine = self.MycroPy_SerialWrite
         self.flush = self.MycroPy_flush
@@ -118,7 +119,6 @@ class Handshake(object):
             print('y tho', msgres)
             self.RX_nextSent(msgres)
             if self.curRXHDR == msg:
-                self.sleep(1)
                 rxtrue = self.writeNextLine('RXTRUE\n')
                 self.sleep(1)
                 if rxtrue <= 0:
