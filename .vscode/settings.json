@@ -1,11 +1,14 @@
 {
+    "python.analysis.extraPaths": [
+        "./RP_PICO_GPS-Tracker",
+        "./RP_PICO_GPS-Tracker/.vscode/Pico-Stub/stdlib",
+        "./RP_PICO_GPS-Tracker/.vscode/Pico-Stub/stubs/machine",
+        ".vscode\\Pico-Stub\\stubs"
+    ],
     "python.linting.enabled": true,
     "python.analysis.typeshedPaths": [
         ".vscode\\Pico-Stub"
     ],
     "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "off",
-    "python.analysis.extraPaths": [
-        ".vscode\\Pico-Stub\\stubs"
-    ]
+    "python.analysis.typeCheckingMode": "off"
 }

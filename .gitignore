@@ -1,3 +1,5 @@
 ./__pycache__
 *.pyc
 rpZ_cronLog.*
+*.vscode
+./*.vscode
