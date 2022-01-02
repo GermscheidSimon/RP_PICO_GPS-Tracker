@@ -4,7 +4,7 @@
         ".vscode\\Pico-Stub"
     ],
     "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "off",
     "python.analysis.extraPaths": [
         ".vscode\\Pico-Stub\\stubs"
     ]
