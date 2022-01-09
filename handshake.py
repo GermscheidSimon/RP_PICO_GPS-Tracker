@@ -28,6 +28,7 @@ class Handshake(object):
     def requestLock(self):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
+            self.flush()
             self.sleep(2)
             self.writeNextLine('REQACK\n')
             self.sleep(1)
@@ -47,6 +48,7 @@ class Handshake(object):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
             print(retries)
+            self.flush()
             self.sleep(2)
             reqMsg = self.readNextLine()
             self.sleep(1)
