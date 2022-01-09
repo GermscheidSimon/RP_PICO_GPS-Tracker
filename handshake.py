@@ -90,8 +90,8 @@ class Handshake(object):
     def RX_nextSent(self, nextMsg):
         self.curSent = nextMsg.decode()
         print(self.curSent)
-        self.curRXHDR = self.curSent[0:6]
-        self.curRXBDY = self.curSent[7:-1]
+        self.curRXHDR = self.curSent[0:5]
+        self.curRXBDY = self.curSent[6:-1]
 
 
     def TX_data (self, data):

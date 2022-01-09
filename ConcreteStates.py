@@ -59,6 +59,7 @@ class ConnectingPi(State):
         handshake = Handshake()
         #encode obj to json
         jsonObj = json.dumps({"lat": coord.lat, "long": coord.long, "date": coord.date, "time": coord.time})
+        print(jsonObj)
         self.raceCodnitionLoL()
         handshakeLock = handshake.requestLock()
         print('hs', handshakeLock)
