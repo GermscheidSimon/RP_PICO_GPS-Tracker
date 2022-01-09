@@ -2,8 +2,7 @@ import os
 
 class rpZ_LTEStart():
      def __init__(self):
-        isconnected =  self.start()
-        return isconnected
+        self.isconnected =  self.start()
      def start(self):
         try:
             os.system("ip link set wwan0 down ")

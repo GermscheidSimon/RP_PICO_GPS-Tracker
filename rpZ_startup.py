@@ -9,6 +9,7 @@ class rpZ_startup():
     def __init__(self):
         try:
             _rpZLTEConnected = rpZ_LTEStart.rpZ_LTEStart()
+            _rpZLTEConnected = _rpZLTEConnected.isconnected
             print('lteconnect', _rpZLTEConnected)
             _rpPico_COM = rpConnectZero.rpConnectZero()
             _rpPico_COM.RX_data()
