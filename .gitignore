@@ -3,3 +3,6 @@
 rpZ_cronLog.*
 *.vscode
 ./*.vscode
+dotenv.*
+dotenv
+dotenv.py
