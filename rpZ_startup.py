@@ -14,7 +14,6 @@ class rpZ_startup():
                 _rpPico_COM = rpConnectZero.rpConnectZero()
                 _rpPico_COM.RX_data()
                 self.data = _rpPico_COM.handshake.data
-                print('great ')
                 print(self.data)
         except:
             print('R2D2 Scream')
