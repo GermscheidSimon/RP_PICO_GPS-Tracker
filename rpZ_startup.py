@@ -1,20 +1,19 @@
 from rpZ_LTEStart import rpZ_LTEStart
 import rpConnectZero
-import asyncio
 import rpZ_LTEStart
 import dotenv
 import http.client
 import json
 
 class rpZ_startup():
-    async def __init__(self):
+    def __init__(self):
         try:
-            _rpZLTEConnected = await rpZ_LTEStart.rpZ_LTEStart()
-            if _rpZLTEConnected:
-                _rpPico_COM = rpConnectZero.rpConnectZero()
-                _rpPico_COM.RX_data()
-                self.data = _rpPico_COM.handshake.data
-                print(self.data)
+            _rpZLTEConnected = rpZ_LTEStart.rpZ_LTEStart()
+            print('lteconnect', _rpZLTEConnected)
+            _rpPico_COM = rpConnectZero.rpConnectZero()
+            _rpPico_COM.RX_data()
+            self.data = _rpPico_COM.handshake.data
+            print(self.data)
         except:
             print('R2D2 Scream')
         finally:
