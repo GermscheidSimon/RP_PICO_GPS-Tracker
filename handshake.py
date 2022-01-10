@@ -28,37 +28,46 @@ class Handshake(object):
     def requestLock(self):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
-            self.flush()
-            self.sleep(2)
-            self.writeNextLine('REQACK\n')
-            self.sleep(1)
-            resMsg = self.readNextLine()
-            print(resMsg)
-            if not resMsg == None:
-                self.RX_nextSent(resMsg)
-                if self.curRXHDR == 'RESACK':
-                    self.handShakeEstablished = True
-                    print('lockestablished')
-                    return True
-            print(retries) 
-            retries += 1
+            try:
+                self.sleep(2)
+                self.writeNextLine('REQACK\n')
+                self.sleep(1)
+                resMsg = self.readNextLine()
+                print(resMsg)
+                if not resMsg == None:
+                    self.RX_nextSent(resMsg)
+                    if self.curRXHDR == 'RESACK':
+                        self.handShakeEstablished = True
+                        print('lockestablished')
+                        return True
+                print(retries) 
+                retries += 1
+            except:
+                print('readfail')
+                self.flush()
+                retries += 1
         return False
     
     def respondLock(self):
         retries = 0
         while not self.handShakeEstablished and retries <= 100:
-            print(retries)
-            self.flush()
-            self.sleep(2)
-            reqMsg = self.readNextLine()
-            self.sleep(1)
-            print(reqMsg)
-            self.RX_nextSent(reqMsg)
-            if self.curRXHDR == 'REQACK':
-                self.writeNextLine('RESACK\n')
-                self.handShakeEstablished = True
-                return True
-            retries += 1
+            try:
+                print(retries)
+                self.sleep(2)
+                reqMsg = self.readNextLine()
+                self.sleep(1)
+                print(reqMsg)
+                self.RX_nextSent(reqMsg)
+                if self.curRXHDR == 'REQACK':
+                    self.writeNextLine('RESACK\n')
+                    self.handShakeEstablished = True
+                    return True
+                retries += 1
+            except:
+                print('readfail')
+                self.flush()
+                retries += 1
+
         return False
 
     def buildMycroPySerial(self):
